@@ -1,0 +1,23 @@
+---
+- name: Install packages
+  sudo: true
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - apache2
+  tags: apache
+
+
+- include: modules.yml
+  tags: apache
+
+- include: home_directory.yml
+  tags: apache
+
+
+- include: default_site.yml
+  tags: apache
+
+
+- name: Ensure service is started
+  service: name=apache2 state=started enabled=yes
+  tags: apache

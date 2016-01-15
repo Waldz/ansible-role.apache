@@ -1,0 +1,10 @@
+---
+apache:
+  # Servers default domain https://domain.com/ is under SSL, by default
+  default_ssl_cert: /etc/apache2/ssl/server.crt
+  default_ssl_key: /etc/apache2/ssl/server.key
+
+apache_mods_enabled:
+  - ssl
+
+apache_mods_disabled: []

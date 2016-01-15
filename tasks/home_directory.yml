@@ -1,0 +1,21 @@
+---
+- name: Check home directory of www-data
+  sudo: true
+  shell: >
+    echo ~www-data
+  register: apache_home_fact
+  changed_when: apache_home_fact.stdout != '/home/www-data'
+
+
+- name: Stop service, because home directory will be moved elsewhere
+  sudo: true
+  service: name=apache2 state=stopped
+  when: apache_home_fact.changed
+
+
+- name: Create home directory for www-data
+  sudo: true
+  user: name=www-data createhome=yes home="/home/www-data" shell="/bin/bash"
+  #shell: usermod -m -d /home/www-data -s /bin/bash www-data
+  when: apache_home_fact.changed
+  notify: start apache

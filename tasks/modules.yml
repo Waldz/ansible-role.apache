@@ -1,0 +1,13 @@
+---
+- name: Enable Apache modules
+  command: >
+    a2enmod {{ item }}
+  with_items: apache_mods_enabled
+  notify: restart apache
+
+
+- name: Disable Apache modules
+  command: >
+    a2dismod {{ item }}
+  with_items: apache_mods_disabled
+  notify: restart apache

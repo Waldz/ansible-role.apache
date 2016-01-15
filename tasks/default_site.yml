@@ -1,0 +1,50 @@
+---
+- name: Create default site directories
+  sudo: true
+  file:
+    state=directory
+    path={{ item }}
+    owner=www-data
+    group=www-data
+    mode=0755
+  with_items:
+    - /var/log/apache2/default
+    - /var/www
+    - /var/www/default
+  notify: reload apache
+
+
+- name: Deploy default site
+  sudo: true
+  sudo_user: www-data
+  template: src="var/www/default/index.html" dest="/var/www/default/index.html"
+
+
+- name: Remove preinstalled default site
+  sudo: true
+  file: >
+    state=absent
+    dest={{ item }}
+  with_items:
+    - /etc/apache2/sites-available/000-default.conf
+    - /etc/apache2/sites-available/default.conf
+    - /etc/apache2/sites-available/default-ssl.conf
+    - /etc/apache2/sites-enabled/000-default
+    - /etc/apache2/sites-enabled/default
+    - /etc/apache2/sites-enabled/default-ssl
+  notify: reload apache
+
+
+- name: Update default site configuration
+  sudo: true
+  template: >
+    src="etc/apache2/sites-available/default.conf"
+    dest="/etc/apache2/sites-available/default.conf"
+  notify: reload apache
+
+
+- name: Enable default site
+  sudo: true
+  command: >
+    a2ensite default
+  notify: reload apache
