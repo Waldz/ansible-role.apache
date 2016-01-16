@@ -27,7 +27,6 @@
     dest={{ item }}
   with_items:
     - /etc/apache2/sites-available/000-default.conf
-    - /etc/apache2/sites-available/default.conf
     - /etc/apache2/sites-available/default-ssl.conf
     - /etc/apache2/sites-enabled/000-default
     - /etc/apache2/sites-enabled/default
@@ -47,4 +46,7 @@
   sudo: true
   command: >
     a2ensite default
+  register: command_result
+  changed_when: >
+    "To activate the new configuration, you need to run:" in command_result.stdout
   notify: reload apache
